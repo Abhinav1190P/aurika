@@ -1,22 +1,14 @@
 const puppeteer = require('puppeteer');
 const path = require('path');
-const fs = require('fs').promises;
+const fs = require('fs').promises;  // Change this line
 const Handlebars = require('handlebars');
 const Joi = require('joi');
-const crypto = require('crypto'); // For generating unique hash
 
-
-const templateCache = new Map();
-
-async function loadTemplate(templateName) {
-    if (templateCache.has(templateName)) {
-        return templateCache.get(templateName);
-    }
+async function loadTemplate(templateName, data) {
     const filePath = path.join(__dirname, 'templates', `${templateName}.hbs`);
     const source = await fs.readFile(filePath, 'utf-8');
     const template = Handlebars.compile(source);
-    templateCache.set(templateName, template);
-    return template;
+    return template(data);
 }
 
 async function saveInvoicePDF(pdfBuffer, invoiceNumber) {
@@ -34,10 +26,6 @@ async function saveInvoicePDF(pdfBuffer, invoiceNumber) {
         throw error;
     }
 }
-
-
-
-
 
 
 function numberToWords(num) {
@@ -91,7 +79,7 @@ async function generateInvoice(data) {
         });
 
         const page = await browser.newPage();
-
+        
         const html = await loadTemplate('invoice', templateData);
 
         await page.setContent(html, { waitUntil: 'networkidle0' });
@@ -106,7 +94,7 @@ async function generateInvoice(data) {
 
         const savedFilePath = await saveInvoicePDF(pdfBuffer, data.invoiceDetails.invoiceNo);
         console.log('Invoice saved at:', savedFilePath);
-
+        
         return { pdfBuffer, savedFilePath };
     } catch (error) {
         console.error('Error generating invoice:', error);
@@ -214,6 +202,5 @@ function calculateInvoiceTotals(items, placeOfSupply, placeOfDelivery) {
         grandTotal: totalNetAmount + totalTaxAmount
     };
 }
-
 
 module.exports = { generateInvoice, validateInvoiceData };
