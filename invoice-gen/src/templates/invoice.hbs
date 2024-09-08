@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f4f4;
+        }
+
+        .invoice-container {
+            width: 100%;
+            max-width: 800px;
+            margin-left: -10px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .invoice-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        .logo {
+            max-width: 150px;
+            height: auto;
+        }
+
+        .invoice-title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            text-align: right;
+            color: #2a3f54;
+        }
+
+        .details-section {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #2a3f54;
+        }
+
+        .details {
+            width: 45%;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #2a3f54;
+            color: #fff;
+        }
+
+        .total-row {
+            font-weight: bold;
+            background-color: #f2f2f2;
+        }
+
+        .amount-in-words {
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .signature {
+            text-align: right;
+            margin-top: 20px;
+        }
+
+        .signature img {
+            max-width: 150px;
+            height: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="invoice-container">
+        <div class="invoice-header">
+            <img src="{{companyLogo}}" alt="Company Logo" class="logo">
+            <div>
+                <div class="invoice-title">INVOICE</div>
+                <div>Invoice No: {{invoiceDetails.invoiceNo}}</div>
+                <div>Date: {{invoiceDetails.invoiceDate}}</div>
+            </div>
+        </div>
+
+        <div class="details-section">
+            <div class="details">
+                <div class="section-title">Seller:</div>
+                <p>
+                    {{sellerDetails.name}}<br>
+                    {{sellerDetails.address}}<br>
+                    {{sellerDetails.city}}, {{sellerDetails.state}} {{sellerDetails.pincode}}<br>
+                    PAN: {{sellerDetails.panNo}}<br>
+                    GST: {{sellerDetails.gstRegistrationNo}}
+                </p>
+            </div>
+            <div class="details">
+                <div class="section-title">Buyer:</div>
+                <p>
+                    {{billingDetails.name}}<br>
+                    {{billingDetails.address}}<br>
+                    {{billingDetails.city}}, {{billingDetails.state}} {{billingDetails.pincode}}<br>
+                    State Code: {{billingDetails.stateCode}}
+                </p>
+            </div>
+        </div>
+
+        <div class="details-section">
+            <div class="details">
+                <div class="section-title">Shipping Details:</div>
+                <p>
+                    {{shippingDetails.name}}<br>
+                    {{shippingDetails.address}}<br>
+                    {{shippingDetails.city}}, {{shippingDetails.state}} {{shippingDetails.pincode}}<br>
+                    State Code: {{shippingDetails.stateCode}}
+                </p>
+            </div>
+            <div class="details">
+                <div class="section-title">Order Details:</div>
+                <p>
+                    Order No: {{orderDetails.orderNo}}<br>
+                    Order Date: {{orderDetails.orderDate}}<br>
+                    Place of Supply: {{placeOfSupply}}<br>
+                    Place of Delivery: {{placeOfDelivery}}<br>
+                    Reverse Charge: {{invoiceDetails.reverseCharge}}
+                </p>
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Unit Price</th>
+                    <th>Quantity</th>
+                    <th>Discount</th>
+                    <th>Net Amount</th>
+                    <th>Tax Rate</th>
+                    <th>Total Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each items}}
+                <tr>
+                    <td>{{description}}</td>
+                    <td>₹{{unitPrice}}</td>
+                    <td>{{quantity}}</td>
+                    <td>₹{{discount}}</td>
+                    <td>₹{{netAmount}}</td>
+                    <td>{{taxRate}}%</td>
+                    <td>₹{{totalAmount}}</td>
+                </tr>
+                {{/each}}
+                <tr class="total-row">
+                    <td colspan="4">Total:</td>
+                    <td>₹{{totalNetAmount}}</td>
+                    <td></td>
+                    <td>₹{{grandTotal}}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="amount-in-words">
+            <strong>Amount in Words:</strong> {{amountInWords}}
+        </div>
+
+        <div class="signature">
+            <img src="{{signatureImage}}" alt="Authorised Signature">
+            <p>Authorised Signatory</p>
+        </div>
+    </div>
+</body>
+
+</html>
